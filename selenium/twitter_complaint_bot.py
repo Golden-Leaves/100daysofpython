@@ -33,9 +33,6 @@ def main():
         time.sleep(15)
     time.sleep(10)
     
-    #hạ đẳng
-    #ngu
-    #chết mẹ đi
 
     
     enter_email = WebDriverWait(driver,25).until(EC.presence_of_element_located((By.NAME,"text")))    

@@ -99,11 +99,14 @@ def admin_only(func):
 @app.route('/register',methods=["GET","POST"])
 def register():
     form = RegisterForm()
+    
     if form.validate_on_submit():
         name = form.name.data
-        if db.session.execute(db.select(User).where(User.name == name)).scalar():
+        user = db.session.execute(db.select(User).where(User.name == name)).scalar()
+        if user:#Check if username already exists
             flash("Username already exists, please choose another one.")
             return redirect(url_for("get_all_posts"))
+        
         email = form.email.data
         password = generate_password_hash(form.password.data,method="pbkdf2",salt_length=8)
         user = User(name=name,email=email,password=password)
@@ -122,13 +125,15 @@ def login():
     if form.validate_on_submit():
         email = form.email.data
         user = db.session.execute(db.select(User).where(User.email == email)).scalar()
-        if user == None:
+        if not user:
             flash("Email does not exist.")
             return redirect(url_for("login"))
+        
         is_correct_password = check_password_hash(pwhash=user.password,password=form.password.data)
         if is_correct_password:
             login_user(user=user)
             return redirect(url_for("get_all_posts"))
+        
         else:
             flash("Incorrect Password.")
             return redirect(url_for("login"))
@@ -153,10 +158,12 @@ def get_all_posts():
 def show_post(post_id):
     form = CommentForm() #Allows users to comment
     comments = db.session.execute(db.select(Comment)).scalars().all()
+    
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             flash("Login in to comment on posts!")
             return redirect(url_for("login"))
+        
         body = form.body.data
         comment = Comment(text=body,author_id=current_user.id,author=current_user)
         db.session.add(comment)
@@ -166,12 +173,13 @@ def show_post(post_id):
     return render_template("post.html", post=requested_post,form=form,comments=comments)
 
 
-# TODO: Use a decorator so only an admin user can create a new post
+
 
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
     form = CreatePostForm()
+    
     if form.validate_on_submit():
         new_post = BlogPost(
             title=form.title.data,
@@ -185,10 +193,11 @@ def add_new_post():
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("get_all_posts"))
+    
     return render_template("make-post.html", form=form)
 
 
-# TODO: Use a decorator so only an admin user can edit a post
+
 
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 @admin_only
@@ -212,7 +221,7 @@ def edit_post(post_id):
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
 
-# TODO: Use a decorator so only an admin user can delete a post
+
 
 @app.route("/delete/<int:post_id>")
 @admin_only
