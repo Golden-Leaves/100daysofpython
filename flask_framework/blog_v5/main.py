@@ -9,11 +9,11 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm, ContactMeForm
 from dotenv import load_dotenv
 import os
 # Optional: add contact me email functionality (Day 60)
-# import smtplib
+import smtplib
 
 
 '''
@@ -278,6 +278,18 @@ def about():
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
+
+    gmail_account = os.getenv("GMAIL")
+    python_mail_password = os.getenv("GMAIL_APP_PASSWORD")
+    if request.method == "POST":
+        data = request.form
+        with smtplib.SMTP("smtp.gmail.com",port = 587) as connection:
+            connection.starttls()
+            connection.login(user = gmail_account, password = python_mail_password)
+            connection.sendmail(from_addr=gmail_account,to_addrs=gmail_account,msg=f"""Subject:Contact Form\n\n From {data["name"]},{data["phone"]}
+    {data["message"]}""")
+        flash("Successfully sent message.")
+        return redirect(url_for("contact"))
     return render_template("contact.html", current_user=current_user)
 
 # Optional: You can include the email sending code from Day 60:
