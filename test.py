@@ -1,2 +1,2 @@
-liasd = [123,145,146,178,190,200,250,350,360]
-print((40/100) * (len(liasd) - 1))
+for i in range(21):
+    print(":a_XD " * i)
