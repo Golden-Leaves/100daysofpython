@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver import ActionChains
 import time
 import csv
 def main():
@@ -13,12 +14,22 @@ def main():
     driver.get("https://www.payscale.com/college-salary-report/majors-that-pay-you-back/bachelors")
     time.sleep(2)
     data = []
-    table_headers = driver.find_elements(By.TAG_NAME,value="th")
-    print([th.text for th in table_headers])
-    with open("test.csv", 'w') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        csvwriter.writerow([th.text for th in table_headers])
-    print("Success")
+    #Scroll so that the table is visible
+    html = driver.find_element(By.TAG_NAME, "html")
+    driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight * 0.1", html)
+
+    table_rows = driver.find_elements(By.TAG_NAME,value="tr")
+    for row in table_rows:
+        row_data = []
+        major_cell = row.find_element(By.CSS_SELECTOR, ".data-table__cell.csr-col--school-name")
+        others  = row.find_elements(By.CSS_SELECTOR,value=".data-table__cell.csr-col--right ")
+        non_rank_cells= [major_cell] + others #others is a list lol
+        for non_rank_cell in non_rank_cells:
+            cell_value = non_rank_cell.find_element(By.CSS_SELECTOR,value=".data-table__value")
+            row_data.append(cell_value)
+        data.append(row_data)
+    
+  
     
 if __name__ == "__main__":
     main()
