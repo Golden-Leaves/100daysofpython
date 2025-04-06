@@ -21,6 +21,7 @@ def main():
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 
     table_rows = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.TAG_NAME,"tr")))
+    print(table_rows)
     for row in table_rows:
         row_data = []
         print(row)
