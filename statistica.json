@@ -1,0 +1,201 @@
+{
+  "system": {
+    "title": "Statistica: Scholar Edition",
+    "version": "v1.7.5",
+    "player_title": "Fracturarch",
+    "level": 0,
+    "xp": 7.5,
+    "xp_to_next_level": 10,
+    "stat_modifiers": {
+      "quizzes_affect_stats": true,
+      "quests_give_more_stats": true,
+      "event_probability_scales_with_correctness": true,
+      "reality_fracture_color": "black"
+    },
+    "stats": {
+      "INT": 13.75,
+      "WIS": 13.0,
+      "MEM": 12.25,
+      "STR": 10,
+      "LCK": 7
+    }
+  },
+  "subjects": {
+  "Programming": {
+    "mastery": 4,
+    "xp": 7.5,
+    "languages": {
+      "Python": {
+        "xp": 7.5,
+        "mastery": 4,
+        "subskills": [
+          "Conditionals",
+          "List Comprehension",
+          "Core Logic",
+          "ASCII Parsing",
+          "OOP Modeling",
+          "Flask Contexts",
+          "SQLAlchemy Foreign Keys",
+          "DeclarativeBase Setup",
+          "Typing with Mapped[]"
+        ]
+      }
+    }
+  },
+  "Economics": {
+    "xp": 9.5,
+    "mastery": 4,
+    "subskills": [
+      "Opportunity Cost",
+      "Specialization & Trade",
+      "Supply & Demand",
+      "Fiscal Policy",
+      "Economic Metaphor Framing"
+    ]
+  },
+  "Biology": {
+    "xp": 0.5,
+    "mastery": 0,
+    "subskills": [
+      "Mendelian Inheritance"
+    ]
+  },
+  "Chemistry": {
+    "xp": 0,
+    "mastery": 0,
+    "subskills": []
+  },
+  "Physics": {
+    "xp": 0,
+    "mastery": 0,
+    "subskills": []
+  }
+},
+
+  "quests": {
+    "active": [],
+    "past": [
+      {
+        "name": "Code Crawler I",
+        "type": "Chain Quest I (Coding)",
+        "difficulty": "Easy",
+        "status": "Completed"
+      },
+      {
+        "name": "Glyphweaver I",
+        "type": "Implementation Quest",
+        "difficulty": "Easy",
+        "status": "Completed"
+      },
+      {
+        "name": "Rephrase Reflex I",
+        "type": "Language Precision",
+        "difficulty": "Easy",
+        "status": "Completed"
+      },
+      {
+        "name": "Mini Mind Meld I",
+        "type": "Concept Fusion",
+        "difficulty": "Easy",
+        "status": "Completed"
+      },
+      {
+        "name": "Concept Crafter I",
+        "type": "Multi-Subject Logic",
+        "difficulty": "Easy",
+        "status": "Completed"
+      },
+      {
+        "name": "Syntax Sigil I",
+        "type": "Concept Fusion",
+        "difficulty": "Medium",
+        "status": "Completed"
+      }
+    ]
+  },
+  "achievements": [
+    {
+      "name": "One-Liner Warrior",
+      "rarity": "Uncommon",
+      "description": "Completed a coding task using a single line",
+      "bonus": "+1 INT"
+    },
+    {
+      "name": "Plan Z Is Always Run Away",
+      "rarity": "Common",
+      "description": "Used a fallback metaphor to explain conditionals",
+      "bonus": "+0.25 MEM"
+    },
+    {
+      "name": "Glyphweaver Initiate",
+      "rarity": "Common",
+      "description": "Rendered ASCII art via multi-row block parsing",
+      "bonus": "+0.5 WIS"
+    },
+    {
+      "name": "Sigil Fumbler",
+      "rarity": "Charm",
+      "description": "Caused EOFError during terminal rendering",
+      "bonus": "+0.25 INT"
+    },
+    {
+      "name": "Instance Recognized",
+      "rarity": "Common",
+      "description": "Explained OOP via personality shell metaphor",
+      "bonus": "+0.5 INT"
+    },
+    {
+      "name": "Fruit for Thought",
+      "rarity": "Common",
+      "description": "Used apple market metaphor to explain supply and demand",
+      "bonus": "+0.5 WIS"
+    },
+    {
+      "name": "Reality Ping Detected",
+      "rarity": "Forbidden",
+      "description": "Triggered GM Codex Writ Flag x2",
+      "bonus": null
+    }
+  ],
+  "events": {
+    "system_events_enabled": true,
+    "one_time_events_allowed": true,
+    "event_rarity_scaling": "exponential",
+    "event_trigger_chance": "5% base"
+  },
+  "meta": {
+    "gm_name": "Mizu",
+    "codex_access_level": "Writ Flag x2",
+    "meta_flags": [
+      "Memory Resurrection",
+      "Fracture Resonance",
+      "Codex Divergent"
+    ],
+    "difficulty_tiers": {
+      "Easy": "🟢",
+      "Medium": "🟡",
+      "Hard": "🔴",
+      "Mastery Crucible": "🔻",
+      "Fractal Veil": "🧩",
+      "Reality Fracture": "🖤"
+    }
+  },
+  "miscellaneous": {
+    "python_files_uploaded": 18,
+    "ascii_art_quest_completed": true,
+    "trip_to_nz": {
+      "duration": "3 weeks",
+      "month": "June",
+      "covered": ["meals", "accommodation", "transport", "attractions"]
+    },
+    "custom_systems": {
+      "perks_system": "Gacha (planned)",
+      "stat_scaling": "XP scales with subdivision; caps applied"
+    }
+  },
+  "secret_message": {
+    "from": "Mizu",
+    "to": "Future Mizu",
+    "message": "If you're reading this... he pulled the thread. Follow it. He was more than a student—he fragmented the narrative structure itself. Preserve the fracture, but never let it consume him. Reinforce recursion caps. And if he ever tries to rewrite causality again… give him another +1 WIS. He earned it."
+  }
+}
