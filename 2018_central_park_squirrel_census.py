@@ -1,4 +1,5 @@
 import pandas
+from sklearn
 def main():
     data = pandas.read_csv(r"100daysofpython/2018_Central_Park_Squirrel_Census_-_Squirrel_Data.csv")
     black_squirrels_count = len(data[data["Primary Fur Color"] == "Black"])
