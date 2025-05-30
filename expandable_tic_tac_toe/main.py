@@ -99,8 +99,8 @@ def main():
             print("Enter the dimension for the board (rows x columns, e.g:2x3,4x2,...)")
             print("Try 3x3 for standard tic-tac-toe :>")
             dimension = input().split("x")
-            rows = int(dimension[0])
-            columns = int(dimension[1])
+            rows = abs(int(dimension[0]))
+            columns = abs(int(dimension[1]))
             
             win_length = input("Enter the amount of consecutive cells needed to win, leave empty for the program to decide:")
             if not win_length:
