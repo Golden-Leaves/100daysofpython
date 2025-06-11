@@ -7,4 +7,4 @@ values = [10, 20, -10, 5]
 
 df = pd.DataFrame({'Values': values}, index=dates)
 cumulative_sum = df['Values'].cumsum()
-print(df)
+print(cumulative_sum)

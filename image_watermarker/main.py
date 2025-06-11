@@ -10,7 +10,58 @@ def main():
     master.minsize(width=window_width, height=window_height)
     master.config(bg="#303030")
     master.title("Image Watermarker")
+    class AddLogoWindow(Toplevel):
+        def __init__(self, master = None,**kwargs):
+            super().__init__(master)
+            def adjust_size(self):
+                slider_value = self.size_slider.get()
+            self.minsize(400,475)
+            self.config(bg="#303030")
+            self.title("Add Logo")
+            self.size_block = Frame(self,style="ControlBlock.TFrame")
+            self.size_label = Label(self.size_block,text="Size",style="WindowLabel.TLabel")
+            self.size_slider = Scale(self.size_block,from_=0,to=100,value=50,command=adjust_size)
+            self.size_label.pack(side=LEFT,padx=10)
+            self.size_slider.pack(side=LEFT,padx=10)
+            self.size_block.grid(row=0,column=0,padx=15,pady=12)
+            self.filename = filedialog.askopenfilename(initialdir="r", title="Open an Image",
+                                              filetypes=(("Image Files", "*.jpg *.jpeg *.png *.webp"), ("All Files", "*.*")))
+            self.logo = None
+            if self.filename:
+                user_img_PIL = Image.open(self.filename)
+                img_width,img_height = user_img_PIL.size
+                img_width = canvas_width // 2 / img_width
+                img_height = canvas_height // 2 / img_height
+                user_img_PIL.thumbnail((img_width,img_height))
+                user_img = ImageTk.PhotoImage(user_img_PIL)
+                image_canvas.logo = user_img
+                logo_image = image_canvas.create_image(canvas_width //2,canvas_height//2,image=user_img)
+                self.size_slider.set(img_width)#It can be eithe img_width or img_height
+                
+            def make_draggable(widget):
+                widget.bind("<Button-1>", on_drag_start)
+                widget.bind("<B1-Motion>", on_drag_motion)
 
+            def on_drag_start(event):#Tracks the current position of the cursor relative to the center of the image(?)
+                widget = event.widget
+                widget._drag_start_x = event.x
+                widget._drag_start_y = event.y
+
+            def on_drag_motion(event):
+                widget = event.widget
+                x = widget.winfo_x() - widget._drag_start_x + event.x #winfo for current coord, subtract this with the cursor offset
+                #in order to center the image, event.x and event.y is just how much it moved (?)
+                y = widget.winfo_y() - widget._drag_start_y + event.y
+                widget.place(x=x, y=y)
+                
+           
+    class AddTextWindow(Toplevel):
+        def __init__(self, master = None,**kwargs):
+            super().__init__(master)
+            self.minsize(400,475)
+            self.config(bg="#303030")
+            self.title("Add Text")
+            
     def open_file():
         #Opens File Explorer
         filename = filedialog.askopenfilename(initialdir="r", title="Open an Image",
@@ -27,35 +78,41 @@ def main():
             #Keeps reference to the image otherwise it gets garbage collected
             image_canvas.im = user_img #https://stackoverflow.com/questions/57049722/unable-to-update-image-in-tkinter-using-a-function
             upload_file_button.destroy()
-            button_frame.grid(row=1, column=0, pady=10)
+            top_toolbar.grid(row=0, column=0, sticky="ew")
             return user_img
         else:
             print("No file selected.")
     
     def add_logo():
-        pass
+        logo_window = AddLogoWindow(master=master)
     def add_text():
+        text_window = AddTextWindow(master=master)
+    def revert():
         pass
 
     style = Style()
     style.theme_use("clam")
-    style.configure("Upload_File.TButton", foreground="white", background="#196bf7",
+    style.configure("UploadFile.TButton", foreground="white", background="#196bf7",
                     relief="flat", borderwidth=0, padding=3,font=("Helvetica",9))
     style.configure("Add.TButton", foreground="white", background="#303030",
                      relief = "flat", padding=3,font=("Helvetica",10),
                       darkcolor="white",
                       lightcolor="gray",
-                     bordercolor="white")
+                     bordercolor="white",
+                    )
     style.configure("TFrame",  background="#303030",
                     relief="flat", borderwidth=0, padding=3)
-    style.map("Upload_File.TButton",
+    style.configure("Toolbar.TFrame",background = "#404040",height=300)#Toolbar at top
+    style.configure("ControlBlock.TFrame",background="#202020")
+    style.configure("WindowLabel.TLabel",background = "#202020",font=("Segoe UI",13),foreground="#f0f0f0")
+    style.map("UploadFile.TButton",
               foreground=[("pressed", "white"), ("active", "white")],
               background=[("pressed", "#003acc"), ("active", "#338aff")])
     style.map("Add.TButton",
               foreground=[("pressed", "white"), ("active", "white")],
               background=[("pressed", "#202020"), ("active", "#404040")])
 
-    cloud_upload_img = Image.open("./images/cloud_upload_image.png")
+    cloud_upload_img = Image.open(r"C:\Users\PC\Desktop\Programming\python_projects\100daysofpython\image_watermarker\images\cloud_upload_image.png")
     cloud_upload_width, cloud_upload_height = cloud_upload_img.size
     cloud_upload_img.thumbnail((cloud_upload_width - 200, cloud_upload_height - 100))
     cloud_upload_png = ImageTk.PhotoImage(cloud_upload_img)
@@ -70,24 +127,29 @@ def main():
         image=cloud_upload_png,
         anchor="center"
     )
-    image_canvas.grid(column=0, row=0)
+    logo_image = None
+    image_canvas.grid(row=1, column=0)
 
     upload_file_button = Button(master, text="Upload File", padding=(20, 8),
                                 style="Upload_File.TButton", command=open_file)
-    upload_file_button.grid(row=1, column=0, pady=10)
+    upload_file_button.grid(row=2, column=0, pady=10)
 
-    button_frame = Frame(master, style="TFrame", padding=10)
+    top_toolbar = Frame(master, style="Toolbar.TFrame",height=300,width=window_width)
     # Don't grid it until after upload
-    add_text_button = Button(button_frame, text="Add Text", padding=(20, 8),
-                             style="Upload_File.TButton", command=add_text)
-    add_logo_button = Button(button_frame, text="Add Logo", padding=(20, 8),
-                             style="Upload_File.TButton", command=add_logo)
+    button_container = Frame(top_toolbar, style="Toolbar.TFrame")
+    button_container.pack(anchor="center", pady=10)
+
+    add_text_button = Button(button_container, text="Add Text", padding=(20, 8),
+                            style="UploadFile.TButton", command=add_text)
+    add_logo_button = Button(button_container, text="Add Logo", padding=(20, 8),
+                         style="UploadFile.TButton", command=add_logo)
     add_text_button.pack(side=LEFT, padx=10)
     add_logo_button.pack(side=LEFT, padx=10) #Packs them side-by-side in the frame
-
+    
     master.grid_rowconfigure(0, weight=1)
     master.grid_rowconfigure(1, weight=1)
     master.grid_columnconfigure(0, weight=1)
+    master.grid_rowconfigure(2, weight=1)
     master.mainloop()
 
 if __name__ == "__main__":
