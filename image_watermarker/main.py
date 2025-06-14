@@ -16,6 +16,9 @@ def main():
             self.config(bg="#303030")
             self.title("Add Logo")
             
+            self.logo_size = None
+            self.logo_transparency = None
+            
             self.size_block = Frame(self,style="ControlBlock.TFrame")
             self.size_slider = Scale(self.size_block,from_=1,to=100,value=50,command=self.adjust_size)
             self.size_label = Label(self.size_block,text="Size",style="ControlLabel.TLabel")
@@ -25,18 +28,20 @@ def main():
             self.size_info.pack(side=LEFT,padx=10)
             self.size_block.grid(row=0,column=0,padx=15,pady=12)
             
-            self.opacity_block = Frame(self, style="ControlBlock.TFrame")
-            self.opacity_slider = Scale(self.opacity_block, from_=0, to=100, value=100, command=self.adjust_opacity)
-            self.opacity_label = Label(self.opacity_block, text="Opacity", style="ControlLabel.TLabel")
-            self.opacity_info = Label(self.opacity_block, text=f"{self.opacity_slider.get()}%", style="ValueLabel.TLabel")
-            self.opacity_label.pack(side=LEFT, padx=10)
-            self.opacity_slider.pack(side=LEFT, padx=10)
-            self.opacity_info.pack(side=LEFT, padx=10)
-            self.opacity_block.grid(row=1, column=0, padx=15, pady=12)
+            self.transparency_block = Frame(self, style="ControlBlock.TFrame")
+            self.transparency_slider = Scale(self.transparency_block, from_=0, to=100, value=0, command=self.adjust_transparency)
+            self.transparency_label = Label(self.transparency_block, text="Transparency", style="ControlLabel.TLabel")
+            self.transparency_info = Label(self.transparency_block, text=f"{self.transparency_slider.get()}%", style="ValueLabel.TLabel")
+            self.transparency_label.pack(side=LEFT, padx=10)
+            self.transparency_slider.pack(side=LEFT, padx=10)
+            self.transparency_info.pack(side=LEFT, padx=10)
+            self.transparency_block.grid(row=1, column=0, padx=15, pady=12)
             
             self.filename = filedialog.askopenfilename(initialdir="r", title="Open an Image",
                                               filetypes=(("Image Files", "*.jpg *.jpeg *.png *.webp"), ("All Files", "*.*")))
-            self.original_logo_image = None
+            self.original_logo_image = None #untouched og image
+            self.image = None #Modifiable Image
+            
             self.canvas_width = canvas_width
             self.canvas_height = canvas_height
             self.image_canvas = image_canvas
@@ -44,6 +49,7 @@ def main():
              #Checks if there is already a logo
             if self.filename:
                 self.original_logo_image = Image.open(self.filename).convert("RGBA")
+                self.image = self.original_logo_image.copy()
                 self.img_width,self.img_height = self.original_logo_image.size
                 scale_factor = min(self.canvas_width / 2 / self.img_height,self.canvas_height / 2 / self.img_width) #Sets the slider value so the image is half the canvas
                 target_size = (int(self.img_width * scale_factor),int(self.img_height * scale_factor))
@@ -73,19 +79,25 @@ def main():
         #     y = widget.winfo_y() - widget._drag_start_y + event.y
         #     widget.place(x=x, y=y)
         
+        def display_image(self,*args):
+            self.image_tkinter = ImageTk.PhotoImage(self.image)
+            self.image_canvas.itemconfig(self.logo_image,image=self.image_tkinter)
         def adjust_size(self,*args):
             logo_img = Image.open(self.filename)
             scale_factor = self.size_slider.get() / 100
             self.size_info.config(text=f"{self.size_slider.get():.0f}%")
-            target_size = (int(self.img_width * scale_factor),int(self.img_height * scale_factor))
-            logo_img.thumbnail(target_size)
+            self.logo_size = (int(self.img_width * scale_factor),int(self.img_height * scale_factor))
+            logo_img.thumbnail(self.logo_size)
             new_logo = ImageTk.PhotoImage(logo_img)
-            self.image_canvas.logo = new_logo
-            self.image_canvas.itemconfig(self.logo_image,image=new_logo)
+            self.image = logo_img
+            self.display_image()
         
         def adjust_transparency(self,*args):
-            logo_img = self.original_logo_image
-            
+            logo_img = self.original_logo_image.copy()
+            scale_factor = int(255 * self.transparency_slider.get() / 100) #Percentage, also putalpha() only accepts ints
+            logo_img.putalpha(scale_factor)
+            self.image = logo_img
+            self.display_image()
             
     class AddTextWindow(Toplevel):
         def __init__(self, master = None,**kwargs):
