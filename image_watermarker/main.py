@@ -45,14 +45,16 @@ def main():
             self.canvas_width = canvas_width
             self.canvas_height = canvas_height
             self.image_canvas = image_canvas
+            self.image_width,self.image_height = None,None
             #Sets logo to be half the widht and height of the canvas
              #Checks if there is already a logo
             if self.filename:
                 self.original_logo_image = Image.open(self.filename).convert("RGBA")
                 self.image = self.original_logo_image.copy()
-                self.img_width,self.img_height = self.original_logo_image.size
-                scale_factor = min(self.canvas_width / 2 / self.img_height,self.canvas_height / 2 / self.img_width) #Sets the slider value so the image is half the canvas
-                target_size = (int(self.img_width * scale_factor),int(self.img_height * scale_factor))
+                self.image_width,self.image_height = self.original_logo_image.size
+                
+                scale_factor = min(self.canvas_width / 2 / self.image_height,self.canvas_height / 2 / self.image_width) #Sets the slider value so the image is half the canvas
+                target_size = (int(self.image_width * scale_factor),int(self.image_height * scale_factor))
                 self.original_logo_image.thumbnail(target_size)
                 user_img = ImageTk.PhotoImage(self.original_logo_image)
                 self.image_canvas.logo = user_img
@@ -61,6 +63,7 @@ def main():
                 self.logo_image = self.image_canvas.create_image(center_x,center_y,image=user_img,anchor=CENTER)
                 self.size_slider.set(int(scale_factor * 100)) #The slider scales from 0-100
                 self.size_info.config(text=f"{self.size_slider.get():.0f}%")
+                
             
                 
         # def make_draggable(widget):
@@ -83,18 +86,17 @@ def main():
             self.image_tkinter = ImageTk.PhotoImage(self.image)
             self.image_canvas.itemconfig(self.logo_image,image=self.image_tkinter)
         def adjust_size(self,*args):
-            logo_img = Image.open(self.filename)
+            logo_img = self.original_logo_image.copy()
             scale_factor = self.size_slider.get() / 100
             self.size_info.config(text=f"{self.size_slider.get():.0f}%")
-            self.logo_size = (int(self.img_width * scale_factor),int(self.img_height * scale_factor))
-            logo_img.thumbnail(self.logo_size)
-            new_logo = ImageTk.PhotoImage(logo_img)
+            self.logo_size = (int(self.image_width * scale_factor),int(self.image_height * scale_factor))
+            logo_img = logo_img.resize(self.logo_size, Image.LANCZOS)
             self.image = logo_img
             self.display_image()
         
         def adjust_transparency(self,*args):
-            logo_img = self.original_logo_image.copy()
-            scale_factor = int(255 * self.transparency_slider.get() / 100) #Percentage, also putalpha() only accepts ints
+            logo_img = self.image.copy() #Ofc you need to do this so multiple effects can be added(trans,size,spacing,...)
+            scale_factor = int(255 * self.transparency_slider.get() /100) #Percentage, also putalpha() only accepts ints
             logo_img.putalpha(scale_factor)
             self.image = logo_img
             self.display_image()
