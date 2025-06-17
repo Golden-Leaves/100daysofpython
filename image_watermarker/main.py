@@ -37,6 +37,17 @@ def main():
             self.transparency_info.pack(side=LEFT, padx=10)
             self.transparency_block.grid(row=1, column=0, padx=15, pady=12)
             
+            
+            self.rotation_block = Frame(self, style="ControlBlock.TFrame")
+            self.rotation_slider = Scale(self.rotation_block, from_=-180, to=180, value=0, orient=HORIZONTAL, command=self.adjust_rotation)
+            self.rotation_label = Label(self.rotation_block, text="Rotation", style="ControlLabel.TLabel")
+            self.rotation_info = Label(self.rotation_block, text=f"{self.rotation_slider.get()}°", style="ValueLabel.TLabel")
+            self.rotation_label.pack(side=LEFT, padx=10)
+            self.rotation_slider.pack(side=LEFT, padx=10)
+            self.rotation_info.pack(side=LEFT, padx=10)
+            self.rotation_block.grid(row=2, column=0, padx=15, pady=12)
+
+            
             self.filename = filedialog.askopenfilename(initialdir="r", title="Open an Image",
                                               filetypes=(("Image Files", "*.jpg *.jpeg *.png *.webp"), ("All Files", "*.*")))
             self.original_logo_image = None #untouched og image
@@ -85,10 +96,11 @@ def main():
         def display_image(self,*args):
             self.image_tkinter = ImageTk.PhotoImage(self.image)
             self.image_canvas.itemconfig(self.logo_image,image=self.image_tkinter)
+            
         def adjust_size(self,*args):
             logo_img = self.original_logo_image.copy()
             scale_factor = self.size_slider.get() / 100
-            self.size_info.config(text=f"{self.size_slider.get():.0f}%")
+            self.size_info.config(text=f"{self.size_slider.get():.0f}%") 
             self.logo_size = (int(self.image_width * scale_factor),int(self.image_height * scale_factor))
             logo_img = logo_img.resize(self.logo_size, Image.LANCZOS)
             self.image = logo_img
@@ -96,11 +108,19 @@ def main():
         
         def adjust_transparency(self,*args):
             logo_img = self.image.copy() #Ofc you need to do this so multiple effects can be added(trans,size,spacing,...)
-            scale_factor = int(255 * self.transparency_slider.get() /100) #Percentage, also putalpha() only accepts ints
+            scale_factor = 255 - int(255 * self.transparency_slider.get() /100) #Percentage, also putalpha() only accepts ints
+            self.transparency_info.config(text=f"{self.transparency_slider.get():.0f}%")
             logo_img.putalpha(scale_factor)
             self.image = logo_img
             self.display_image()
-            
+         
+        def adjust_rotation(self,*args):
+            logo_img = self.image.copy()
+            angle = self.rotation_slider.get()
+            self.rotation_info.config(text=f"{angle:.0f}°")
+            img = logo_img.rotate(angle,expand=True,fillcolor=(0,0,0,0))
+            self.image = img
+            self.display_image()
     class AddTextWindow(Toplevel):
         def __init__(self, master = None,**kwargs):
             super().__init__(master)
@@ -174,7 +194,7 @@ def main():
         image=cloud_upload_png,
         anchor="center"
     )
-    logo_image = None
+    
     image_canvas.grid(row=1, column=0)
 
     upload_file_button = Button(master, text="Upload File", padding=(20, 8),
