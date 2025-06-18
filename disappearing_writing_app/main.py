@@ -58,3 +58,14 @@ class User(db.Model,UserMixin):
     name: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(250),unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(250), nullable=False)
+    
+@app.route("/")
+def home():
+    if current_user.is_authenticated:
+        name = current_user.name
+    else:
+        name = ""
+    return render_template("index.html",name=name)
+
+if __name__ == "__main__":
+    app.run(debug=True)
