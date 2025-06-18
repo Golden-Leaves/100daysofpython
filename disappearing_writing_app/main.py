@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from flask import Flask, abort, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # from forms import CreatePostForm,RegisterForm,LoginForm,CommentForm
 import os
 from dotenv import load_dotenv
-
+current_year = datetime.now().year
 current_directory = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(current_directory,".env")
 print(env_path)
@@ -61,11 +61,12 @@ class User(db.Model,UserMixin):
     
 @app.route("/")
 def home():
+    global current_year
     if current_user.is_authenticated:
         name = current_user.name
     else:
         name = ""
-    return render_template("index.html",name=name)
+    return render_template("index.html",name=name,current_year=current_year)
 
 if __name__ == "__main__":
     app.run(debug=True)
