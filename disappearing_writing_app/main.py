@@ -1,5 +1,6 @@
 from datetime import datetime
-from flask import Flask, abort, render_template, redirect, url_for, flash
+from flask import Flask, abort, render_template, redirect, url_for, flash,session
+from flask_session import Session
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_gravatar import Gravatar
@@ -12,7 +13,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # from forms import CreatePostForm,RegisterForm,LoginForm,CommentForm
 import os
 from dotenv import load_dotenv
-current_year = datetime.now().year
+from prompts import prompt_list
+
+
 current_directory = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(current_directory,".env")
 print(env_path)
@@ -20,9 +23,11 @@ load_dotenv(env_path)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config["SESSION_TYPE"] = "filesystem"
 ckeditor = CKEditor(app)
-
+Session(app)
 Bootstrap5(app)
+
 
 
 login_manager = LoginManager()
@@ -61,12 +66,16 @@ class User(db.Model,UserMixin):
     
 @app.route("/")
 def home():
-    global current_year
-    if current_user.is_authenticated:
-        name = current_user.name
-    else:
-        name = ""
-    return render_template("index.html",name=name,current_year=current_year)
+    
+    return render_template("index.html")
+
+@app.route("/random-prompt-generator")
+def generate_prompt():
+   return render_template("generate_prompt.html")
+
+@app.route("/write")
+def write():
+   return render_template("write.html")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 

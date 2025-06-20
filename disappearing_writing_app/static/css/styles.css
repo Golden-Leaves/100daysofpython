@@ -11201,3 +11201,10 @@ body {
 .footer {
   padding: 5rem 0;
 }
+.generate-prompt{
+  background-image: url("../assets/img/bg-masthead.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
