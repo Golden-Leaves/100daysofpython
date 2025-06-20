@@ -3,7 +3,9 @@
 <style>
     .generate-prompt{
   min-height: 100vh;
-  background-image: url("{{ url_for('static', filename='assets/img/bg-about.jpg') }}");
+  background: 
+  linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7), #000),
+  url("{{ url_for('static', filename='assets/img/bg-about.jpg') }}");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -29,6 +31,6 @@
 {%endblock%}
 {%block content%}
 <div class="generate-prompt">
-    <textarea id="editor" placeholder="Start typing..."></textarea>
+    <textarea id="editor" placeholder="Start typing...">{{prompt}}</textarea>
 </div>
 {%endblock%}

@@ -13,8 +13,9 @@
     <main>
       {% block content %}{% endblock %}
     </main>
-
+    {%block footer%}
     {% include "footer.html" %}
+    {%endblock%}
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     {% block scripts %}{% endblock %}
   </body>

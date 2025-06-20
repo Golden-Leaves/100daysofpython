@@ -14,7 +14,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 from prompts import prompt_list
-
+import random
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 env_path = os.path.join(current_directory,".env")
@@ -71,11 +71,12 @@ def home():
 
 @app.route("/random-prompt-generator")
 def generate_prompt():
-   return render_template("generate_prompt.html")
+   session["prompt"] = random.choice(prompt_list)
+   return render_template("generate_prompt.html",prompt=session.get("prompt"))
 
 @app.route("/write")
 def write():
-   return render_template("write.html")
+   return render_template("write.html",prompt=session.get("prompt"))
 
 if __name__ == "__main__":
     app.run(debug=True) 
